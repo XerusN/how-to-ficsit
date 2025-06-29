@@ -16,7 +16,8 @@ impl Building {
 
 #[derive(Clone, PartialEq, Copy, Debug)]
 pub enum BuildingEnum {
-    Smelter
+    Smelter,
+    Miner,
 }
 
 impl BuildingEnum {
@@ -24,6 +25,12 @@ impl BuildingEnum {
         match self {
             Self::Smelter => {
                 let name = "Smelter";
+                let consumption = Power(50.);       // Not accurate
+                
+                Building::new(name, consumption, *self)
+            },
+            Self::Miner => {
+                let name = "Miner";
                 let consumption = Power(50.);       // Not accurate
                 
                 Building::new(name, consumption, *self)

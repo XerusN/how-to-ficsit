@@ -23,6 +23,7 @@ impl Recipe {
 
 #[derive(Clone, PartialEq, Copy, Debug)]
 pub enum RecipeEnum {
+    IronOre,
     Iron2Ingot
 }
 
@@ -34,6 +35,15 @@ impl RecipeEnum {
                 let input = vec![RawItemIO::new(ItemEnum::IronOre, 1)];       // Not accurate
                 let output = vec![RawItemIO::new(ItemEnum::IronIngot, 1)];    // Not accurate
                 let machine = BuildingEnum::Smelter;
+                let time = 10.;
+                
+                Recipe::new(name, input, output, machine, time, *self)
+            },
+            Self::IronOre => {
+                let name = "Iron Mining";
+                let input = vec![];
+                let output = vec![RawItemIO::new(ItemEnum::IronOre, 1)];    // Not accurate
+                let machine = BuildingEnum::Miner;
                 let time = 10.;
                 
                 Recipe::new(name, input, output, machine, time, *self)
