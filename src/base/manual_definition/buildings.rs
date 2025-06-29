@@ -1,7 +1,7 @@
 use super::super::power::Power;
 
 /// Does not define miners or other sources building
-#[derive(Clone, PartialEq)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct Building {
     variant: BuildingEnum,
     name: String,
@@ -14,7 +14,7 @@ impl Building {
     }
 }
 
-#[derive(Clone, PartialEq, Copy)]
+#[derive(Clone, PartialEq, Copy, Debug)]
 pub enum BuildingEnum {
     Smelter
 }

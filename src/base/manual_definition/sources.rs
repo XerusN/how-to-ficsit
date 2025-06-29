@@ -3,7 +3,7 @@ use core::option::Option::None;
 use super::super::power::Power;
 
 /// Does not define miners or other sources building
-#[derive(Clone, PartialEq)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct Source {
     variant: SourceEnum,
     name: String,
@@ -16,7 +16,7 @@ impl Source {
     }
 }
 
-#[derive(Clone, PartialEq, Copy)]
+#[derive(Clone, PartialEq, Copy, Debug)]
 pub enum SourceEnum {
     Mine(f32),
 }

@@ -1,7 +1,7 @@
 use super::recipes::RecipeEnum;
 use super::sources::SourceEnum;
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct Item {
     variant: ItemEnum,
     name: String,
@@ -19,7 +19,7 @@ impl Item {
     }
 }
 
-#[derive(Clone, PartialEq, Copy)]
+#[derive(Clone, PartialEq, Copy, Debug)]
 pub enum ItemEnum {
     IronOre,
     IronIngot,
@@ -44,5 +44,31 @@ impl ItemEnum {
                 Item::new_solid(name, recipes, source, *self)
             },
         }
+    }
+}
+
+/// Items used in a recipe for example, always an integer
+#[derive(Clone, PartialEq, Debug)]
+pub struct RawItemIO {
+    item: ItemEnum,
+    quantity: u32,
+}
+
+impl RawItemIO {
+    pub fn new(item: ItemEnum, quantity: u32) -> Self {
+        RawItemIO { item, quantity }
+    }
+}
+
+/// Items produced or used per minute
+#[derive(Clone, PartialEq, Debug)]
+pub struct AveragedItemIO {
+    item: ItemEnum,
+    quantity: f32,
+}
+
+impl AveragedItemIO {
+    pub fn new(item: ItemEnum, quantity: f32) -> Self {
+        AveragedItemIO { item, quantity }
     }
 }
