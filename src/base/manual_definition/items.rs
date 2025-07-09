@@ -1,58 +1,73 @@
+use super::recipes::Recipe;
 
-use super::recipes::RecipeEnum;
+// Macro to generate getter functions for Item
+macro_rules! generate_item_getters {
+    (
+        $(
+            $variant:ident => {
+                name: $name:expr,
+                recipes: $recipes:expr,
+                fluid: $fluid:expr
+            }
+        ),* $(,)?
+    ) => {
+        impl Item {
+            pub fn get_name(&self) -> &'static str {
+                match self {
+                    $(
+                        Self::$variant => $name,
+                    )*
+                }
+            }
 
-#[derive(Clone, PartialEq, Debug)]
-pub struct Item {
-    variant: ItemEnum,
-    name: String,
-    recipes: Vec<RecipeEnum>,
-    fluid: bool,
-}
+            pub fn get_recipes(&self) -> Vec<Recipe> {
+                match self {
+                    $(
+                        Self::$variant => $recipes,
+                    )*
+                }
+            }
 
-impl Item {
-    pub fn new_fluid(name: &str, recipes: Vec<RecipeEnum>, variant: ItemEnum) -> Self {
-        Item { name: name.to_owned(), recipes, fluid: true, variant}
-    }
-    pub fn new_solid(name: &str, recipes: Vec<RecipeEnum>, variant: ItemEnum) -> Self {
-        Item { name: name.to_owned(), recipes, fluid: false, variant}
-    }
+            pub fn get_fluid(&self) -> bool {
+                match self {
+                    $(
+                        Self::$variant => $fluid,
+                    )*
+                }
+            }
+        }
+    };
 }
 
 #[derive(Clone, PartialEq, Copy, Debug)]
-pub enum ItemEnum {
+pub enum Item {
     IronOre,
     IronIngot,
 }
 
-impl ItemEnum {
-    pub fn get_item(&self) -> Item {
-        match self {
-            Self::IronOre => {
-                let name = "Iron Ore";
-                let recipes = vec![];
-                
-                Item::new_solid(name, recipes, *self)
-            },
-            
-            Self::IronIngot => {
-                let name = "Iron Ingot";
-                let recipes = vec![RecipeEnum::Iron2Ingot];
-                
-                Item::new_solid(name, recipes, *self)
-            },
-        }
-    }
+// Add data about an item here
+generate_item_getters! {
+    IronOre => {
+        name: "Iron Ore",
+        recipes: vec![],
+        fluid: false
+    },
+    IronIngot => {
+        name: "Iron Ingot",
+        recipes: vec![Recipe::IronSmelting],
+        fluid: false
+    },
 }
 
 /// Items used in a recipe for example, always an integer
 #[derive(Clone, PartialEq, Debug, Copy)]
 pub struct RawItemIO {
-    item: ItemEnum,
+    item: Item,
     io: u32,
 }
 
 impl RawItemIO {
-    pub fn new(item: ItemEnum, io: u32) -> Self {
+    pub fn new(item: Item, io: u32) -> Self {
         RawItemIO { item, io }
     }
 }
@@ -60,16 +75,16 @@ impl RawItemIO {
 /// Items produced or used per minute
 #[derive(Clone, PartialEq, Debug, Copy)]
 pub struct AveragedItemIO {
-    item: ItemEnum,
+    item: Item,
     io: f32,
 }
 
 impl AveragedItemIO {
-    pub fn new(item: ItemEnum, io: f32) -> Self {
+    pub fn new(item: Item, io: f32) -> Self {
         AveragedItemIO { item, io }
     }
     
-    pub fn item(&self) -> ItemEnum {
+    pub fn item(&self) -> Item {
         self.item
     }
     

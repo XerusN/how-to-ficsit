@@ -1,40 +1,49 @@
 use super::super::power::Power;
 
-/// Does not define miners or other sources building
-#[derive(Clone, PartialEq, Debug)]
-pub struct Building {
-    variant: BuildingEnum,
-    name: String,
-    consumption: Power,
+// Macro to generate getter functions for Item
+macro_rules! generate_building_getters {
+    (
+        $(
+            $variant:ident => {
+                name: $name:expr,
+                consumption: $consumption:expr,
+            }
+        ),* $(,)?
+    ) => {
+        impl Building {
+            pub fn get_name(&self) -> &'static str {
+                match self {
+                    $(
+                        Self::$variant => $name,
+                    )*
+                }
+            }
+
+            pub fn get_consumption(&self) -> Power {
+                match self {
+                    $(
+                        Self::$variant => $consumption,
+                    )*
+                }
+            }
+        }
+    };
 }
 
-impl Building {
-    pub fn new(name: &str, consumption: Power, variant: BuildingEnum) -> Self {
-        Building { variant, name: name.to_owned(), consumption }
-    }
+// Add data about an item here
+generate_building_getters! {
+    Smelter => {
+        name: "Smelter",
+        consumption: Power(50.),    // Not accurate
+    },
+    Miner => {
+        name: "Miner",
+        consumption: Power(50.),    // Not accurate
+    },
 }
 
 #[derive(Clone, PartialEq, Copy, Debug)]
-pub enum BuildingEnum {
+pub enum Building {
     Smelter,
     Miner,
-}
-
-impl BuildingEnum {
-    pub fn get_buidling(&self) -> Building {
-        match self {
-            Self::Smelter => {
-                let name = "Smelter";
-                let consumption = Power(50.);       // Not accurate
-                
-                Building::new(name, consumption, *self)
-            },
-            Self::Miner => {
-                let name = "Miner";
-                let consumption = Power(50.);       // Not accurate
-                
-                Building::new(name, consumption, *self)
-            },
-        }
-    }
 }

@@ -1,53 +1,85 @@
 use crate::base::manual_definition::items::RawItemIO;
 
-use super::items::ItemEnum;
-use super::buildings::BuildingEnum;
+use super::items::Item;
+use super::buildings::Building;
 
+// Macro to generate getter functions for Item
+macro_rules! generate_recipe_getters {
+    (
+        $(
+            $variant:ident => {
+                name: $name:expr,
+                input: $input:expr,
+                output: $output:expr,
+                machine: $machine:expr,
+                time: $time:expr,
+            }
+        ),* $(,)?
+    ) => {
+        impl Recipe {
+            pub fn get_name(&self) -> &'static str {
+                match self {
+                    $(
+                        Self::$variant => $name,
+                    )*
+                }
+            }
+            
+            pub fn get_input(&self) -> Vec<RawItemIO> {
+                match self {
+                    $(
+                        Self::$variant => $input,
+                    )*
+                }
+            }
+            
+            pub fn get_output(&self) -> Vec<RawItemIO> {
+                match self {
+                    $(
+                        Self::$variant => $output,
+                    )*
+                }
+            }
 
-#[derive(Clone, PartialEq, Debug)]
-pub struct Recipe {
-    variant: RecipeEnum,
-    name: String,
-    input: Vec<RawItemIO>,
-    output: Vec<RawItemIO>,
-    // No manual machines
-    machine: BuildingEnum,
-    time: f32,
-}
-
-impl Recipe {
-    pub fn new(name: &str, input: Vec<RawItemIO>, output: Vec<RawItemIO>, machine: BuildingEnum, time: f32, variant: RecipeEnum) -> Recipe {
-        Recipe { variant, name: name.to_owned(), input, output, machine, time }
-    }
+            pub fn get_machine(&self) -> Building {
+                match self {
+                    $(
+                        Self::$variant => $machine,
+                    )*
+                }
+            }
+            
+            pub fn get_time(&self) -> f64 {
+                match self {
+                    $(
+                        Self::$variant => $time,
+                    )*
+                }
+            }
+        }
+    };
 }
 
 #[derive(Clone, PartialEq, Copy, Debug)]
-pub enum RecipeEnum {
-    IronOre,
-    Iron2Ingot
+pub enum Recipe {
+    IronMining,
+    IronSmelting,
 }
 
-impl RecipeEnum {
-    pub fn get_recipe(&self) -> Recipe {
-        match self {
-            Self::Iron2Ingot => {
-                let name = "Iron Smelting";
-                let input = vec![RawItemIO::new(ItemEnum::IronOre, 1)];       // Not accurate
-                let output = vec![RawItemIO::new(ItemEnum::IronIngot, 1)];    // Not accurate
-                let machine = BuildingEnum::Smelter;
-                let time = 10.;
-                
-                Recipe::new(name, input, output, machine, time, *self)
-            },
-            Self::IronOre => {
-                let name = "Iron Mining";
-                let input = vec![];
-                let output = vec![RawItemIO::new(ItemEnum::IronOre, 1)];    // Not accurate
-                let machine = BuildingEnum::Miner;
-                let time = 10.;
-                
-                Recipe::new(name, input, output, machine, time, *self)
-            },
-        }
-    }
+// Add data about an item here
+generate_recipe_getters! {
+    IronMining => {
+        name: "Iron Mining",
+        input: vec![],
+        output: vec![RawItemIO::new(Item::IronOre, 1)],     // Not accurate
+        machine: Building::Miner,
+        time: 10.,                                          // Not accurate
+    },
+    IronSmelting => {
+        name: "Iron Smelting",
+        input: vec![RawItemIO::new(Item::IronOre, 1)],      // Not accurate
+        output: vec![RawItemIO::new(Item::IronIngot, 1)],   // Not accurate
+        machine: Building::Smelter,
+        time: 10.,                                          // Not accurate
+    },
 }

@@ -1,8 +1,11 @@
 use base::*;
 
+use crate::base::manual_definition::items::Item;
+
 mod base;
 mod save_manager;
 
 fn main() {
-    println!("Hello, world!");
+    let item = Item::IronIngot;
+    println!("{}", item.get_name())
 }
